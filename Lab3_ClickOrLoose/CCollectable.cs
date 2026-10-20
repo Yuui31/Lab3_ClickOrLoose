@@ -3,37 +3,32 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Lab3_ClickOrLoose // Убедись, что тут твой namespace!
+namespace Lab3_ClickOrLoose
 {
-    public class CObject
+    public abstract class CCollectable
     {
-        private Point position;
-        private Size size;
-        private double lifetime;
-        private double pointsValue;
-        private Ellipse sprite;
+        // ТУТ ДОЛЖНО БЫТЬ СЛОВО protected, а не private!
+        protected Point position;
+        protected Size size;
+        protected double lifetime;
+        protected Ellipse sprite;
 
-        public CObject(Point position, double size, double lifetime)
+        public CCollectable(Point position, double size, double lifetime)
         {
             this.position = position;
             this.size = new Size(size, size);
             this.lifetime = lifetime;
 
             sprite = new Ellipse();
-            sprite.Fill = Brushes.BlueViolet;
             sprite.StrokeThickness = 2;
             sprite.Stroke = Brushes.Black;
             sprite.Width = this.size.Width;
             sprite.Height = this.size.Height;
             sprite.RenderTransform = new TranslateTransform(position.X, position.Y);
-
-            pointsValue = ((1 / this.size.Width) / lifetime) * 1000;
         }
 
         public Ellipse GetSprite() { return sprite; }
-        public double GetPointsValue() { return pointsValue; }
 
-        // Проверка: попал ли клик по кружку?
         public bool IsMouseOnObject(Point mousePosition)
         {
             return mousePosition.X >= position.X &&
@@ -42,11 +37,19 @@ namespace Lab3_ClickOrLoose // Убедись, что тут твой namespace!
                    mousePosition.Y <= position.Y + size.Height;
         }
 
-        // Обновление времени жизни (true = объект умер)
         public bool UpdateLifetime(double delta)
         {
             lifetime -= delta;
             return lifetime <= 0;
         }
+
+        // Вот этот метод не находился!
+        public void AddLifetime(double amount)
+        {
+            lifetime += amount;
+        }
+
+        // И вот этот метод тоже не находился!
+        public abstract bool OnClick(CPlayer player, CController controller, Point mousePosition);
     }
 }
