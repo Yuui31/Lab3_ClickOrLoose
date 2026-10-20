@@ -17,7 +17,7 @@ namespace Lab3_ClickOrLoose
         {
             InitializeComponent();
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100); // 100 мс
+            timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += Timer_Tick;
         }
 
@@ -45,18 +45,32 @@ namespace Lab3_ClickOrLoose
             }
 
             controller.Update(delta);
-            ScoreText.Text = controller.GetPoints().ToString("F1");
-            TimeText.Text = $"{gameTime:F1}s / {gameDuration}s";
 
-            GameCanvas.Children.Clear();
-            foreach (var obj in controller.GetObjects())
-                GameCanvas.Children.Add(obj.GetSprite());
+            // Обновляем картинку по таймеру
+            UpdateVisuals();
         }
 
         private void GameCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!isGameRunning) return;
+
             controller.MouseClick(e.GetPosition(GameCanvas));
+
+            // ВОТ ОНО! Обновляем картинку сразу же после клика
+            UpdateVisuals();
+        }
+
+        // Новый метод для отрисовки
+        private void UpdateVisuals()
+        {
+            ScoreText.Text = controller.GetPoints().ToString("F1");
+            TimeText.Text = $"{gameTime:F1}s / {gameDuration}s";
+
+            GameCanvas.Children.Clear();
+            foreach (var obj in controller.GetObjects())
+            {
+                GameCanvas.Children.Add(obj.GetSprite());
+            }
         }
     }
 }
