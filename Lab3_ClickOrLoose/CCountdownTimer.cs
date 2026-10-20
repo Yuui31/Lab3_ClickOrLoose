@@ -26,7 +26,6 @@
         {
             currentTime = 0;
         }
-
         public void DecreaseTargetTime(double amount)
         {
             targetTime -= amount;
