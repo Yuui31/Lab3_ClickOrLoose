@@ -8,6 +8,7 @@ namespace Lab3_ClickOrLoose
     public partial class MainWindow : Window
     {
         private CController controller;
+        private CPlayer player; // Добавили игрока
         private DispatcherTimer timer;
         private double gameTime = 0;
         private double gameDuration = 10.0;
@@ -26,12 +27,13 @@ namespace Lab3_ClickOrLoose
             if (isGameRunning) return;
             GameCanvas.Children.Clear();
             controller = new CController(0.5, new Size(GameCanvas.ActualWidth, GameCanvas.ActualHeight));
+            player = new CPlayer(0.3); // Перезарядка 0.3 секунды (300 мс)
             gameTime = 0;
             isGameRunning = true;
             timer.Start();
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             double delta = 0.1;
             gameTime += delta;
@@ -44,9 +46,8 @@ namespace Lab3_ClickOrLoose
                 return;
             }
 
+            player.Update(delta); // Обновляем таймер перезарядки
             controller.Update(delta);
-
-            // Обновляем картинку по таймеру
             UpdateVisuals();
         }
 
@@ -54,13 +55,11 @@ namespace Lab3_ClickOrLoose
         {
             if (!isGameRunning) return;
 
-            controller.MouseClick(e.GetPosition(GameCanvas));
-
-            // ВОТ ОНО! Обновляем картинку сразу же после клика
+            // Клик идет сначала в Игрока, а он решает, можно ли бить
+            player.MouseClick(e.GetPosition(GameCanvas), controller);
             UpdateVisuals();
         }
 
-        // Новый метод для отрисовки
         private void UpdateVisuals()
         {
             ScoreText.Text = controller.GetPoints().ToString("F1");
@@ -68,9 +67,7 @@ namespace Lab3_ClickOrLoose
 
             GameCanvas.Children.Clear();
             foreach (var obj in controller.GetObjects())
-            {
                 GameCanvas.Children.Add(obj.GetSprite());
-            }
         }
     }
 }
