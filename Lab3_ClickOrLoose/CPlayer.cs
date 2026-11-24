@@ -18,6 +18,7 @@ namespace Lab3_ClickOrLoose
 
         public void MouseClick(Point mousePosition, CController controller)
         {
+            
             // Если перезарядка не прошла — клик игнорируется
             if (!countdownTimer.IsReady()) return;
 

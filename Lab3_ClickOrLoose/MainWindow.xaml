@@ -22,5 +22,6 @@
 
         <Canvas x:Name="GameCanvas" Grid.Row="1" Background="#F0F0F0" 
                 MouseLeftButtonDown="GameCanvas_MouseLeftButtonDown"/>
+        <ListBox x:Name="LogListBox" Width="150" Height="150" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20"/>
     </Grid>
 </Window>

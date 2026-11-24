@@ -6,6 +6,10 @@ namespace Lab3_ClickOrLoose
 {
     public class CController
     {
+        public delegate void SceneEvent(object sender, CControllerEventArgs e);
+        public event SceneEvent addObject;
+        public event SceneEvent removeObject;
+
         // Храним список именно РОДИТЕЛЕЙ, но класть туда будем НАСЛЕДНИКОВ
         private List<CCollectable> objects;
         private double spawnRate;
@@ -49,7 +53,9 @@ namespace Lab3_ClickOrLoose
             else if (type < 9) newObj = new CLifetimeModifier(pos, randomSize, life); // 20%
             else newObj = new CSpamRateChanger(pos, randomSize, life);            // 10%
 
+
             objects.Add(newObj);
+            addObject?.Invoke(this, new CControllerEventArgs(newObj.GetSprite()));
         }
 
         public void Update(double delta)
@@ -64,7 +70,11 @@ namespace Lab3_ClickOrLoose
             for (int i = objects.Count - 1; i >= 0; i--)
             {
                 if (objects[i].UpdateLifetime(delta))
+                {
+                    // ВОТ ЭТА СТРОЧКА ОБЯЗАТЕЛЬНА:
+                    removeObject?.Invoke(this, new CControllerEventArgs(objects[i].GetSprite()));
                     objects.RemoveAt(i);
+                }
             }
         }
 
@@ -76,6 +86,8 @@ namespace Lab3_ClickOrLoose
                 // ВЫЗОВ АБСТРАКТНОГО МЕТОДА. Сработает версия нужного наследника!
                 if (objects[i].OnClick(player, this, mousePosition))
                 {
+                    removeObject?.Invoke(this, new CControllerEventArgs(objects[i].GetSprite()));
+
                     objects.RemoveAt(i);
                     return true;
                 }

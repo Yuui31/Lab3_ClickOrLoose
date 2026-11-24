@@ -24,6 +24,10 @@ namespace Lab3_ClickOrLoose
             sprite.Stroke = Brushes.Black;
             sprite.Width = this.size.Width;
             sprite.Height = this.size.Height;
+
+            sprite.HorizontalAlignment = HorizontalAlignment.Left;
+            sprite.VerticalAlignment = VerticalAlignment.Top;
+
             sprite.RenderTransform = new TranslateTransform(position.X, position.Y);
         }
 
